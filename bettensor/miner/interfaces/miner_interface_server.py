@@ -415,3 +415,28 @@ if __name__ == "__main__":
 
     context = DebugSSLContext(ssl.PROTOCOL_TLS_SERVER)
     context.load_cert_chain(certfile=CHILD_CERT_PATH, keyfile=PRIVATE_KEY_PATH)
+
+@app.route('/GameData', methods=['POST'])
+def game_data():
+    try:
+        data = request.get_json(force=True)
+        print("📥 Incoming data from validator:", data)
+
+        #MAIN LOGIC
+
+
+        prediction = "Over 2.5"
+        confidence = 0.82
+        match_id = data.get("match_id", "unknown")
+
+        response = {
+            "prediction": prediction,
+            "confidence": confidence,
+            "match_id": match_id
+        }
+
+        print("📤 Responding with:", response)
+        return jsonify(response), 200
+    except Exception as e:
+        print("❌ Error in /GameData:", str(e))
+        return jsonify({"error": "Invalid input", "details": str(e)}), 400
