@@ -149,9 +149,11 @@ if [ "$NEURON_TYPE" = "miner" ]; then
     if [ "$FLASK_SERVER" = "true" ]; then
         if ! pm2 list | grep -q "flask-server"; then
             echo "Starting Flask server..."
-            pm2 start --name "flask-server" python -- \
-                -m bettensor.miner.interfaces.miner_interface_server
+            #pm2 start --name "flask-server" python -- \
+            #    -m bettensor.miner.interfaces.miner_interface_server
             
+            pm2 start "gunicorn -w 4 -b 0.0.0.0:5000 bettensor.miner.interfaces.miner_interface_server:app" --name "flask-server"
+
             sleep 2  # Give the server a moment to start
 
             if pm2 list | grep -q "flask-server"; then
