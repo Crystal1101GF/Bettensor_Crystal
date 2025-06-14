@@ -158,7 +158,7 @@ class BettensorMiner(BaseNeuron):
 
     def _handle_game_data(self, synapse: GameData) -> GameData:
         bt.logging.debug(f"Processing game data: {len(synapse.gamedata_dict)} games")
-
+        bt.logging.debug(f"--------------------------Crystal_log: \n{synapse.gamedata_dict} ")
         try:
             # Process all games, regardless of changes
             updated_games, new_games = self.games_handler.process_games(
