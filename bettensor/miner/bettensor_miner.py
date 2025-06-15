@@ -164,36 +164,19 @@ class BettensorMiner(BaseNeuron):
             updated_games, new_games = self.games_handler.process_games(
                 synapse.gamedata_dict
             )
-
-
-            #Crystal_Dev ADD @{
-            conn, cur = self.db_manager.connection_pool.getconn(), None
-            cur = conn.cursor()
-            cur.execute("""
-                SELECT game_id, team_a, team_b, event_start_date 
-                FROM games 
-                ORDER BY last_update_date DESC 
-                LIMIT 50
-            """)
-            rows = cur.fetchall()
-            print("✅ Last 50 GameData entries:")
-            for row in rows:
-                print("📄", row)
-            conn.close()
-
-            #@}
-
+            bt.logging.debug(f"--------------------------Crystal_log:  Updated_games \n{updated_games} ")
+            bt.logging.debug(f"--------------------------Crystal_log:  New_games \n{new_games} ")
             # Get recent predictions from the database
             recent_predictions = self.predictions_handler.get_recent_predictions()
-
+            bt.logging.debug(f"--------------------------Crystal_log:  Recent_predictions \n{recent_predictions} ")
             # Process predictions for updated and new games
             processed_predictions = self.predictions_handler.process_predictions(
                 updated_games, new_games
             )
-
+            bt.logging.debug(f"--------------------------Crystal_log:  Processed_predictions \n{processed_predictions} ")
             # Combine recent predictions with processed predictions
             all_predictions = {**recent_predictions, **processed_predictions}
-
+            bt.logging.debug(f"--------------------------Crystal_log:  ALL_predictions \n{all_predictions} ")
             # Update cache with all predictions
             self.cache_manager.update_cached_predictions(all_predictions)
 
