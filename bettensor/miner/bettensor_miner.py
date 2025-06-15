@@ -158,6 +158,8 @@ class BettensorMiner(BaseNeuron):
 
     def _handle_game_data(self, synapse: GameData) -> GameData:
         bt.logging.debug(f"Processing game data: {len(synapse.gamedata_dict)} games")
+        
+        #Crystal_Dev ADD:   @{
         bt.logging.debug(f"--------------------------Crystal_log: \n{synapse.gamedata_dict} ")
         try:
             # Process all games, regardless of changes
@@ -165,6 +167,25 @@ class BettensorMiner(BaseNeuron):
                 synapse.gamedata_dict
             )
 
+            try:
+                conn = psycopg2.connect(
+                    host="localhost",
+                    port=5432,
+                    dbname="minerdb",
+                    user="root",
+                    password="your_password"  # Replace with your actual DB password
+                )
+                cur = conn.cursor()
+                cur.execute("SELECT prediction_id, predicted_outcome, prediction_date FROM predictions ORDER BY prediction_date DESC LIMIT 3")
+                for row in cur.fetchall():
+                    print("📄", row)
+                conn.close()
+            except Exception as e:
+                print(f"❌ Database connection failed: {e}")
+
+            #@}
+
+            
             # Get recent predictions from the database
             recent_predictions = self.predictions_handler.get_recent_predictions()
 
